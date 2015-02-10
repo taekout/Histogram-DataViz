@@ -1,13 +1,13 @@
 <!doctype html>
-<html lang="en">
+<html lang="en"></
 <head>
-    <title>Template (Three.js)</title>
+    <title>Data Viz</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <link rel=stylesheet href="css/base.css"/>
 </head>
 <body>
-
+	
 <script src="js/Three.js"></script>
 <script src="js/Detector.js"></script>
 <script src="js/Stats.js"></script>
@@ -23,19 +23,30 @@
 <link rel=stylesheet href="css/info.css"/>
 <script src="js/info.js"></script>
 <div id="infoButton"></div>
-<div id="infoBox" title="Demo Information">
-This three.js demo is part of a collection at
-<a href="http://stemkoski.github.io/Three.js/">http://stemkoski.github.io/Three.js/</a>
+<div id="infoBox" title="DataViz.">
+Taekyu Shin : This code is built upon Stem's sample codes from stemkoski.github.io.
+
+<p>Image to use:</p>
+<img id="histo" src="histo.png" style="display:none">
+
+<p>Canvas:</p>
+<canvas id="myCanvas" width="250" height="300" style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML5 canvas tag.</canvas>
+
+<script>
+
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+var img = document.getElementById("histo");
+ctx.drawImage(img, 0, 0, 100, 100);
+
+</script>
+
 </div>
 <!-- ------------------------------------------------------------ -->
 
 <div id="ThreeJS" style="position: absolute; left:0px; top:0px"></div>
 <script>
-/*
-	Three.js "tutorials by example"
-	Author: Lee Stemkoski
-	Date: July 2013 (three.js v59dev)
- */
 
 // MAIN
 
@@ -109,7 +120,7 @@ function init()
 	for(var i = -kRange ; i <= kRange ; i+=1.0) {
 		for(var j = -kRange ; j <= kRange ; j+=1.0) {
 			for(var k = -kRange ; k <= kRange ; k+= 1.0) {
-				var geometry = new THREE.SphereGeometry( 10, 32, 16 );
+				var geometry = new THREE.SphereGeometry( 10, 10, 10 );
 				var material = new THREE.MeshLambertMaterial( { color: 0x0000ff } );
 				mesh = new THREE.Mesh( geometry, material );
 				mesh.position.set(0 + j * kDist, 40 + i * kDist, 0 + k * kDist);
