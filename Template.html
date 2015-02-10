@@ -30,15 +30,46 @@ Taekyu Shin : This code is built upon Stem's sample codes from stemkoski.github.
 <img id="histo" src="histo.png" style="display:none">
 
 <p>Canvas:</p>
-<canvas id="myCanvas" width="250" height="300" style="border:1px solid #d3d3d3;">
+<canvas id="imgCanvas" width="250" height="300" style="border:1px solid #d3d3d3;">
 Your browser does not support the HTML5 canvas tag.</canvas>
 
 <script>
 
-var c = document.getElementById("myCanvas");
+var c = document.getElementById("imgCanvas");
 var ctx = c.getContext("2d");
 var img = document.getElementById("histo");
 ctx.drawImage(img, 0, 0, 100, 100);
+var imgData = ctx.getImageData(0, 0, c.width, c.height);
+
+var histoData = new Array(6);
+for(var i = 0 ; i < 6 ; i++) {
+	histoData[i] = new Array(6);
+	for(var j = 0 ; j < 6 ; j++) {
+		histoData[i][j] = new Array(6);
+		for(var k = 0 ; k < 6 ; k++) {
+			histoData[i][j][k] = 0;
+		}
+	}
+}
+
+// get histogram.
+var binSize = 43;
+for (var i = 0; i < imgData.data.length; i += 4) {
+
+	// red
+	var red = Math.floor( imgData.data[i] / binSize );
+	var blu = Math.floor( imgData.data[i+1] / binSize );
+	var gre = Math.floor( imgData.data[i+2] / binSize );
+	histoData[red][blu][gre] ++;
+	imgData.data[i] = 255 - imgData.data[i];
+	imgData.data[i+1] = 255 - imgData.data[i+1];
+	imgData.data[i+2] = 255 - imgData.data[i+2];
+	imgData.data[i+3] = 255;
+}
+
+ctx.putImageData(imgData,0,0);
+
+
 
 </script>
 
