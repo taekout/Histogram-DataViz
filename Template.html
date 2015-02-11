@@ -160,14 +160,16 @@ function init()
 	const kDist = 20.0;
 	for( var i = 0 ; i < kRange ; i++ ) {
 		for( var j = 0 ; j < kRange ; j++ ) {
-			for( var k = 0 ; k <= kRange ; k++ ) {
+			for( var k = 0 ; k < kRange ; k++ ) {
 				//alert(histoData[i][j][k]);
 				var radius = Math.log2( histoData[i][j][k] );
 				//alert(radius);
+				//console.log(histoData[i][j][k]);
 				if(radius > 0.01) {
-					//alert(radius);
+
 					var geometry = new THREE.SphereGeometry( radius, radius, radius );
-					var material = new THREE.MeshLambertMaterial( {color:0x000088} );//{ color: 0x000088 } 
+					//console.log(new THREE.Color().setRGB( 0,0,0.5).getHexString());
+					var material = new THREE.MeshLambertMaterial( { color: new THREE.Color().setRGB( i,j,k ).getHex() } );//{ color: 0x000088 } 
 					mesh = new THREE.Mesh( geometry, material );
 					mesh.position.set( (j - 3) * kDist, 40 + (i - 3) * kDist, 0 + (k - 3) * kDist);
 					scene.add(mesh);
