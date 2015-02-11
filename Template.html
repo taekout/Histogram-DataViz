@@ -54,14 +54,16 @@ for(var i = 0 ; i < 7 ; i++) {
 
 
 // get histogram.
-var binSize = 37;
+var kBinSize = 37;
 for (var i = 0; i < imgData.data.length; i += 4) {
 
 	// red
-	var red = Math.floor( imgData.data[i] / binSize );
-	var blu = Math.floor( imgData.data[i+1] / binSize );
-	var gre = Math.floor( imgData.data[i+2] / binSize );
+	var red = Math.floor( imgData.data[i] / kBinSize );
+	var blu = Math.floor( imgData.data[i+1] / kBinSize );
+	var gre = Math.floor( imgData.data[i+2] / kBinSize );
+	//alert(red + " " + blu + " " + gre);
 	histoData[red][blu][gre] ++;
+	//alert(histoData[red][blu][gre]);
 	imgData.data[i] = 255 - imgData.data[i];
 	imgData.data[i+1] = 255 - imgData.data[i+1];
 	imgData.data[i+2] = 255 - imgData.data[i+2];
@@ -147,18 +149,30 @@ function init()
 	////////////
 	// CUSTOM //
 	////////////
+	
+	/*
+	Q1. Why alert(histoData[i][j][k]) has some undefined data?
+	Am I accessing out of boundary(array)?
+	
+	Q2. How to pass color from (red, green, blue)?
+	*/
 	const kRange = 7.0;
 	const kDist = 20.0;
 	for( var i = 0 ; i < kRange ; i++ ) {
 		for( var j = 0 ; j < kRange ; j++ ) {
 			for( var k = 0 ; k <= kRange ; k++ ) {
-				var radius = histoData[i][j][k];
-				alert(radius);
-				var geometry = new THREE.SphereGeometry( radius, radius, radius );
-				var material = new THREE.MeshLambertMaterial( { color: 0x000088 } );
-				mesh = new THREE.Mesh( geometry, material );
-				mesh.position.set( (j - 3) * kDist, 40 + (i - 3) * kDist, 0 + (k - 3) * kDist);
-				scene.add(mesh);
+				//alert(histoData[i][j][k]);
+				var radius = Math.log2( histoData[i][j][k] );
+				//alert(radius);
+				if(radius > 0.01) {
+					//alert(radius);
+					var geometry = new THREE.SphereGeometry( radius, radius, radius );
+					var material = new THREE.MeshLambertMaterial( {color:0x000088} );//{ color: 0x000088 } 
+					mesh = new THREE.Mesh( geometry, material );
+					mesh.position.set( (j - 3) * kDist, 40 + (i - 3) * kDist, 0 + (k - 3) * kDist);
+					scene.add(mesh);
+				}
+				
 			}
 		}
 	}
