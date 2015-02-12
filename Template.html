@@ -27,7 +27,7 @@
 Taekyu Shin : This code is built upon Stem's sample codes from stemkoski.github.io.
 
 <p>Image to use:</p>
-<img id="histo" src="histo.png" style="display:none">
+<img id="histo" src="US community map.png" style="display:none">
 
 <p>Canvas:</p>
 <canvas id="imgCanvas" width="250" height="300" style="border:1px solid #d3d3d3;">
@@ -133,9 +133,9 @@ function init()
 	light.position.set(100,250,100);
 	scene.add(light);
 	// FLOOR
-	var floorTexture = new THREE.ImageUtils.loadTexture( 'images/checkerboard.jpg' );
+	var floorTexture = new THREE.ImageUtils.loadTexture( 'US community map.png' );
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
-	floorTexture.repeat.set( 10, 10 );
+	floorTexture.repeat.set( 1, 1 );
 	var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
 	var floorGeometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
 	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
@@ -163,8 +163,11 @@ function init()
 	for( var i = 0 ; i < kRange ; i++ ) {
 		for( var j = 0 ; j < kRange ; j++ ) {
 			for( var k = 0 ; k < kRange ; k++ ) {
-				//alert(histoData[i][j][k]);
-				var radius = Math.min( Math.max(Math.log2( histoData[i][j][k] ), 3), 10);
+				var radius;
+				if(i == kRange - 1 && j == kRange - 1 && k == kRange - 1)
+					radius = 3;
+				else
+					radius = Math.min( Math.max(Math.log2( histoData[i][j][k] ), 3), 10);
 				//console.log(Math.log2( histoData[i][j][k] ) );
 				console.log( new THREE.Color().setRGB( i,j,k ).getHex() );
 				var geometry = new THREE.SphereGeometry( radius, 10, 10 );
