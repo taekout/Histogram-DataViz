@@ -137,7 +137,7 @@ function init()
 	var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
 	var floorGeometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
 	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
-	floor.position.y = -0.5;
+	floor.position.y = -50;
 	floor.rotation.x = Math.PI / 2;
 	scene.add(floor);
 	// SKYBOX
@@ -162,19 +162,15 @@ function init()
 		for( var j = 0 ; j < kRange ; j++ ) {
 			for( var k = 0 ; k < kRange ; k++ ) {
 				//alert(histoData[i][j][k]);
-				var radius = Math.log2( histoData[i][j][k] );
-				//alert(radius);
-				//console.log(histoData[i][j][k]);
-				if(radius > 0.01) {
-
-					var geometry = new THREE.SphereGeometry( radius, radius, radius );
-					//console.log(new THREE.Color().setRGB( 0,0,0.5).getHexString());
-					var material = new THREE.MeshLambertMaterial( { color: new THREE.Color().setRGB( i,j,k ).getHex() } );//{ color: 0x000088 } 
-					mesh = new THREE.Mesh( geometry, material );
-					mesh.position.set( (j - 3) * kDist, 40 + (i - 3) * kDist, 0 + (k - 3) * kDist);
-					scene.add(mesh);
-				}
-				
+				var radius = Math.min( Math.max(Math.log2( histoData[i][j][k] ), 3), 10);
+				//console.log(Math.log2( histoData[i][j][k] ) );
+				console.log( new THREE.Color().setRGB( i,j,k ).getHex() );
+				var geometry = new THREE.SphereGeometry( radius, 10, 10 );
+				//console.log(new THREE.Color().setRGB( 0,0,0.5).getHexString());
+				var material = new THREE.MeshLambertMaterial( { color: new THREE.Color().setRGB( i * kBinSize / 255 , j * kBinSize /255 , k * kBinSize / 255).getHex() } );//{ color: 0x000088 } 
+				mesh = new THREE.Mesh( geometry, material );
+				mesh.position.set( (j - 3) * kDist, 40 + (i - 3) * kDist, 0 + (k - 3) * kDist);
+				scene.add(mesh);
 			}
 		}
 	}
