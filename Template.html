@@ -35,44 +35,6 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 
 <script>
 
-var c = document.getElementById("imgCanvas");
-var ctx = c.getContext("2d");
-var img = document.getElementById("histo");
-ctx.drawImage(img, 0, 0, 100, 100);
-var imgData = ctx.getImageData(0, 0, c.width, c.height);
-
-var histoData = new Array(7);
-for(var i = 0 ; i < 7 ; i++) {
-	histoData[i] = new Array(7);
-	for(var j = 0 ; j < 7 ; j++) {
-		histoData[i][j] = new Array(7);
-		for(var k = 0 ; k < 7 ; k++) {
-			histoData[i][j][k] = 0;
-		}
-	}
-}
-
-
-// get histogram.
-var kBinSize = 37;
-for (var i = 0; i < imgData.data.length; i += 4) {
-
-	// red
-	var red = Math.floor( imgData.data[i] / kBinSize );
-	var blu = Math.floor( imgData.data[i+1] / kBinSize );
-	var gre = Math.floor( imgData.data[i+2] / kBinSize );
-	//alert(red + " " + blu + " " + gre);
-	histoData[red][blu][gre] ++;
-	//alert(histoData[red][blu][gre]);
-	imgData.data[i] = 255 - imgData.data[i];
-	imgData.data[i+1] = 255 - imgData.data[i+1];
-	imgData.data[i+2] = 255 - imgData.data[i+2];
-	imgData.data[i+3] = 255;
-}
-
-ctx.putImageData(imgData,0,0);
-
-
 
 </script>
 
@@ -98,6 +60,46 @@ animate();
 // FUNCTIONS 		
 function init() 
 {
+	// update help canvas.
+	var c = document.getElementById("imgCanvas");
+	var ctx = c.getContext("2d");
+	var img = document.getElementById("histo");
+	ctx.drawImage(img, 0, 0, 100, 100);
+	var imgData = ctx.getImageData(0, 0, c.width, c.height);
+
+	var histoData = new Array(7);
+	for(var i = 0 ; i < 7 ; i++) {
+		histoData[i] = new Array(7);
+		for(var j = 0 ; j < 7 ; j++) {
+			histoData[i][j] = new Array(7);
+			for(var k = 0 ; k < 7 ; k++) {
+				histoData[i][j][k] = 0;
+			}
+		}
+	}
+
+
+	// get histogram.
+	var kBinSize = 37;
+	for (var i = 0; i < imgData.data.length; i += 4) {
+
+		// red
+		var red = Math.floor( imgData.data[i] / kBinSize );
+		var blu = Math.floor( imgData.data[i+1] / kBinSize );
+		var gre = Math.floor( imgData.data[i+2] / kBinSize );
+		//alert(red + " " + blu + " " + gre);
+		histoData[red][blu][gre] ++;
+		//alert(histoData[red][blu][gre]);
+		imgData.data[i] = 255 - imgData.data[i];
+		imgData.data[i+1] = 255 - imgData.data[i+1];
+		imgData.data[i+2] = 255 - imgData.data[i+2];
+		imgData.data[i+3] = 255;
+	}
+
+	ctx.putImageData(imgData,0,0);
+
+	
+	
 	// SCENE
 	scene = new THREE.Scene();
 	// CAMERA
