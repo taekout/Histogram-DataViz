@@ -63,8 +63,8 @@ function init()
 	// update help canvas.
 	var c = document.getElementById("imgCanvas");
 	var ctx = c.getContext("2d");
-	var img = document.getElementById("histo");
-	ctx.drawImage(img, 0, 0, 100, 100);
+	var imgRsc = document.getElementById("histo");
+	ctx.drawImage(imgRsc, 0, 0, 100, 100);
 	var imgData = ctx.getImageData(0, 0, c.width, c.height);
 
 	var histoData = new Array(7);
