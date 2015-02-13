@@ -29,16 +29,14 @@ Taekyu Shin : This code is built upon Stem's sample codes from stemkoski.github.
 <p>Image to use:</p>
 <img id="histo" src="US community map.png" style="display:none">
 
-<p>Canvas:</p>
-<canvas id="imgCanvas" width="250" height="300" style="border:1px solid #d3d3d3;">
+<canvas id="imgCanvas" width="250" height="300" style="border:1px solid #d3d3d3; display:none;">
 Your browser does not support the HTML5 canvas tag.</canvas>
 
-<script>
-
-
-</script>
-
 </div>
+
+
+
+
 <!-- ------------------------------------------------------------ -->
 
 <div id="ThreeJS" style="position: absolute; left:0px; top:0px"></div>
@@ -52,54 +50,56 @@ var keyboard = new KeyboardState();
 var clock = new THREE.Clock();
 
 // custom global variables
+const kBinSize = 37;
+var histoData = new Array(7);
+for(var i = 0 ; i < 7 ; i++) {
+	histoData[i] = new Array(7);
+	for(var j = 0 ; j < 7 ; j++) {
+		histoData[i][j] = new Array(7);
+	}
+}
+
 var mesh;
 
-init();
+ComputeHistogram(histoData);
+InitScene(histoData);
 animate();
 
-// FUNCTIONS 		
-function init() 
-{
+
+function ComputeHistogram(histogram) {
 	// update help canvas.
 	var c = document.getElementById("imgCanvas");
 	var ctx = c.getContext("2d");
 	var imgRsc = document.getElementById("histo");
-	ctx.drawImage(imgRsc, 0, 0, 100, 100);
+	ctx.drawImage(imgRsc, 0, 0, imgRsc.width, imgRsc.height);
 	var imgData = ctx.getImageData(0, 0, c.width, c.height);
 
-	var histoData = new Array(7);
 	for(var i = 0 ; i < 7 ; i++) {
-		histoData[i] = new Array(7);
 		for(var j = 0 ; j < 7 ; j++) {
-			histoData[i][j] = new Array(7);
 			for(var k = 0 ; k < 7 ; k++) {
-				histoData[i][j][k] = 0;
+				histogram[i][j][k] = 0;
 			}
 		}
 	}
 
-
 	// get histogram.
-	var kBinSize = 37;
+
 	for (var i = 0; i < imgData.data.length; i += 4) {
 
 		// red
 		var red = Math.floor( imgData.data[i] / kBinSize );
 		var blu = Math.floor( imgData.data[i+1] / kBinSize );
 		var gre = Math.floor( imgData.data[i+2] / kBinSize );
-		//alert(red + " " + blu + " " + gre);
-		histoData[red][blu][gre] ++;
-		//alert(histoData[red][blu][gre]);
-		imgData.data[i] = 255 - imgData.data[i];
-		imgData.data[i+1] = 255 - imgData.data[i+1];
-		imgData.data[i+2] = 255 - imgData.data[i+2];
-		imgData.data[i+3] = 255;
+
+		histogram[red][blu][gre] ++;
 	}
 
-	ctx.putImageData(imgData,0,0);
+	//ctx.putImageData(imgData,0,0);
+}
 
-	
-	
+// FUNCTIONS 		
+function InitScene(histogram) 
+{
 	// SCENE
 	scene = new THREE.Scene();
 	// CAMERA
@@ -108,7 +108,7 @@ function init()
 	camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
 	scene.add(camera);
 	camera.position.set(0,150,400);
-	camera.lookAt(scene.position);	
+	camera.lookAt(scene.position);
 	// RENDERER
 	if ( Detector.webgl )
 		renderer = new THREE.WebGLRenderer( {antialias:true} );
@@ -133,7 +133,7 @@ function init()
 	light.position.set(100,250,100);
 	scene.add(light);
 	// FLOOR
-	var floorTexture = new THREE.ImageUtils.loadTexture( 'US community map.png' );
+	var floorTexture = new THREE.ImageUtils.loadTexture( document.getElementById("histo").src );
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
 	floorTexture.repeat.set( 1, 1 );
 	var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
@@ -148,28 +148,25 @@ function init()
 	var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
 	scene.add(skyBox);
 	
-	////////////
-	// CUSTOM //
-	////////////
 	
-	/*
-	Q1. Why alert(histoData[i][j][k]) has some undefined data?
-	Am I accessing out of boundary(array)?
-	
-	Q2. How to pass color from (red, green, blue)?
-	*/
+	/////////////////
+	// Color Balls //
+	/////////////////
+
 	const kRange = 7.0;
 	const kDist = 20.0;
 	for( var i = 0 ; i < kRange ; i++ ) {
 		for( var j = 0 ; j < kRange ; j++ ) {
 			for( var k = 0 ; k < kRange ; k++ ) {
+				
 				var radius;
 				if(i == kRange - 1 && j == kRange - 1 && k == kRange - 1)
 					radius = 3;
 				else
-					radius = Math.min( Math.max(Math.log2( histoData[i][j][k] ), 3), 10);
-				//console.log(Math.log2( histoData[i][j][k] ) );
-				console.log( new THREE.Color().setRGB( i,j,k ).getHex() );
+					radius = Math.min( Math.max(Math.log2( histogram[i][j][k] ), 3), 13);
+
+				//console.log(Math.log2( histogram[i][j][k] ) );
+				//console.log( new THREE.Color().setRGB( i,j,k ).getHex() );
 				var geometry = new THREE.SphereGeometry( radius, 10, 10 );
 				//console.log(new THREE.Color().setRGB( 0,0,0.5).getHexString());
 				var material = new THREE.MeshLambertMaterial( { color: new THREE.Color().setRGB( i * kBinSize / 255 , j * kBinSize /255 , k * kBinSize / 255).getHex() } );//{ color: 0x000088 } 

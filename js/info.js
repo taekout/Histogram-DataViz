@@ -21,7 +21,12 @@ $(function()
     .button()
 	.click( 
 		function() 
-		{ 
+		{
 			$("#infoBox").dialog("open");
+			var imgName = window.prompt("What data(image) would you like to visualize?", "US community map.png");
+			if(imgName != null) {
+				document.getElementById("histo").src = imgName;
+			}
+
 		});
 });
